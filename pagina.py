@@ -35,9 +35,10 @@ col3.metric("Recall", f"{recall_score(y_test, y_pred, average='macro'):.4f}")
 col4.metric("F1-score", f"{f1_score(y_test, y_pred, average='macro'):.4f}")
 
 
-st.markdown("<h3 style='text-align: center;'>🧮 Matriz de Confusión</h3>", unsafe_allow_html=True)
+st.subheader("🧮 Matriz de Confusión")
 
-fig, ax = plt.subplots(figsize=(4, 3))
+
+fig, ax = plt.subplots(figsize=(4,3))  
 cm = confusion_matrix(y_test, y_pred)
 
 sns.heatmap(
@@ -54,20 +55,20 @@ ax.set_xlabel("Predicción", fontsize=8)
 ax.set_ylabel("Real", fontsize=8)
 ax.tick_params(axis='both', labelsize=6)
 
+## Guardamos en buffer, esto para que se vea en streamlit
 buf = io.BytesIO()
 fig.tight_layout(pad=0.5)
 fig.savefig(buf, format="png", dpi=200, bbox_inches="tight")
-plt.close(fig)
+plt.close(fig)  
 
-# Imagen centrada
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image(buf, use_container_width=True)
 
-# 🔹 Curva ROC (solo si es binaria)
+st.image(buf, width=1000) 
+
+
 if y_proba is not None and len(np.unique(y_test)) == 2:
-    st.markdown("<h3 style='text-align: center;'>📐 Curva ROC</h3>", unsafe_allow_html=True)
+    st.subheader("📐 Curva ROC")
 
+    # ROC
     fpr, tpr, _ = roc_curve(y_test, y_proba[:, 1])
     roc_auc = auc(fpr, tpr)
 
@@ -83,7 +84,5 @@ if y_proba is not None and len(np.unique(y_test)) == 2:
     fig.tight_layout(pad=0.5)
     fig.savefig(buf, format="png", dpi=200, bbox_inches="tight")
     plt.close(fig)
-
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.image(buf, use_container_width=True)
+    
+    st.image(buf, width=1000)
